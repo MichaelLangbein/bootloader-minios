@@ -77,6 +77,24 @@ mov al, 'A'
 int 0x10
 ```
 
+## Print as function
+```asm
+; strangely, this function works with bx, but not with bh
+print_string:
+    pusha
+    mov ah, 0x0e
+    printChar:
+        mov al, [bx]
+        cmp al, 0
+        je exitprint_string
+        int 0x10
+        add bx, 1
+        jmp printChar
+    exitprint_string:
+        popa
+        ret
+```
+
 ## Offsets
 ```nasm
 [org 0x7c00]
@@ -98,4 +116,20 @@ second:
 
 third: 
     db 'C'
+```
+
+## Proof that code starts at 0x7c00
+```asm
+db 'Z'
+db 'Y'
+
+mov ah, 0x0e
+mov al, [0x7c01]
+int 0x10
+
+loop:
+    jmp loop
+
+times 510 - ($ - $$) db 0
+dw 0xaa55
 ```

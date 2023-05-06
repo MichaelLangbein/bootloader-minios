@@ -1,33 +1,24 @@
-[org 0x7c00]
+db 'ZYX'
 
-mov bx, greeting        ; this works with bx, but not with bh
-call printString
+mov ax, 0x7c00
+mov cs, ax
 
-mov bx, goodbye
-call printString
+mov ah, 0x0e
+; mov al, [0x7c00]
+mov al, [cs:0x01]
+int 0x10
+
+; mov bx, 0x7c00
+; call print_string
+
+;mov dx, 0x7c01
+;call print_hex
 
 loop:
     jmp loop
 
-printString:
-    pusha
-    mov ah, 0x0e
-    printChar:
-        mov al, [bx]
-        cmp al, 0
-        je exitPrintString
-        int 0x10
-        add bx, 1
-        jmp printChar
-    exitPrintString:
-        popa
-        ret
-
-greeting:
-    db 'Hello, world!',0
-
-goodbye:
-    db 'Goodbye!',0
+%include "print_string.asm"
+%include "print_hex.asm"
 
 times 510 - ($ - $$) db 0
 dw 0xaa55
