@@ -47,8 +47,7 @@ uint32_t mmio_read(uint32_t reg);
 // Loop <delay> times in a way that the compiler won't optimize away
 void delay(int32_t count);
 
-enum
-{
+enum {
     // The GPIO registers base address.
 #ifdef MODEL_1
     GPIO_BASE = 0x20200000, 

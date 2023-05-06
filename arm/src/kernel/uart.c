@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <kernel/uart.h>
-#include <common/stdlib.h>
 
 
 /**
