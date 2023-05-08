@@ -10,6 +10,10 @@
  * 4-byte parts of that portion are called `registers`. 
  * Usually at least on register is a control-register.
  * Commonly another one is a write-register.
+ * 
+ * UART:
+ * A simple protocol between GPIOs.
+ * Uses a base-frequency and MMIO.
  */
 
 static inline void mmio_write(uint32_t reg, uint32_t data) {
@@ -55,8 +59,7 @@ void uart_init() {
     mmio_write(UART0_LCRH, (1 << 4) | (1 << 5) | (1 << 6));
 
     // writes ones to interrupt-mask: disabling all interrupts from uart.
-    mmio_write(UART0_IMSC, (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6) |
-            (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10));
+    mmio_write(UART0_IMSC, (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10));
 
     // writes bits 0, 8, 9 to control-register
     // 0: enables uart-hardware

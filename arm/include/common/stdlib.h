@@ -68,7 +68,7 @@ enum {
 #ifdef MODEL_1
     UART0_BASE = 0x20201000, 
 #else
-    UART0_BASE = 0x3F201000
+    UART0_BASE = 0x3F201000,
 #endif
 
     // The offsets for reach register for the UART.
