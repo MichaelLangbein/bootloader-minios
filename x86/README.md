@@ -33,10 +33,27 @@ Higher level syntax:
 - `<label>:
     <instructions for label>`: returns offset from $$
         - to make this label resolvable with `[label]`, first add `0x7c00` (==offset of bootloader code from 0x0)
-- `[label-offset]`: fetch value at offset
-- `[register-name]`: fetch value from the address stored in `register-name`
-- `[org 0x7c00]`: tells assember offset of code. This way, adding 0x7c00 is no longer required.
 - `%include "filename.asm"`
+
+
+- Register addressing
+    - `mov eax, ebx`: Copies what is in ebx into eax
+    - `mov esi, var`: Copies address of var (say 0x0040120e) into esi
+
+- Immediate addressing (second operand is an immediate constant)
+    - `mov bx, 20`: 16-bit register bx gets the actual value 20
+
+- Direct memory addressing (directly loads from memory through a specified address)
+    - `mov ax, [1000h]`: loads a 2-byte object from the byte at address 4096 (0x1000 in hexadecimal) into a 16-bit register called 'ax'
+    - `mov [1000h], ax`: memory at address 1000h gets the value of ax
+
+- Direct offset addressing (same as 3, just using arithmetics to modify address)
+    - `mov al, [byte_tbl+2]`
+    
+- Register indirect (accessing memory by using addresses stored in registers)
+    - `mov ax, [di]`: copies value at memory address specified by di, into ax
+    - `mov dword [eax], var1`: copies value in var1 into the memory slot specified by eax
+
 
 
 ## Registers
@@ -79,19 +96,27 @@ int 0x10
 
 ## Print as function
 ```asm
-; strangely, this function works with bx, but not with bh
+; Naive printing: put literal into al
+; mov ah, 0x0e
+; mov al, 'A'
+; int 0x10
+
+; function printing: put address into bx
+mov bx, 0x7c00
+add bx, HEX_OUT
+call print_string
+
 print_string:
-    pusha
+    mov al, [bx]
+    cmp al, 0
+    je exit
+
     mov ah, 0x0e
-    printChar:
-        mov al, [bx]
-        cmp al, 0
-        je exitprint_string
-        int 0x10
-        add bx, 1
-        jmp printChar
-    exitprint_string:
-        popa
+    int 0x10
+    add bx, 1
+    call print_string
+
+    exit:
         ret
 ```
 

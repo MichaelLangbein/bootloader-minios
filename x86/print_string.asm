@@ -1,15 +1,21 @@
+; Naive printing: put literal into al
+; mov ah, 0x0e
+; mov al, 'A'
+; int 0x10
 
-; strangely, this function works with bx, but not with bh
+; function printing: put address into bx
+; mov bx, 0x7c00
+; add bx, HEX_OUT
+; call print_string
 print_string:
-    pusha
+    mov al, [bx]
+    cmp al, 0
+    je exit
+
     mov ah, 0x0e
-    printChar:
-        mov al, [bx]
-        cmp al, 0
-        je exitprint_string
-        int 0x10
-        add bx, 1
-        jmp printChar
-    exitprint_string:
-        popa
+    int 0x10
+    add bx, 1
+    call print_string
+
+    exit:
         ret

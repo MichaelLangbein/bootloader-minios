@@ -1,24 +1,26 @@
-db 'ZYX'
-
-mov ax, 0x7c00
-mov cs, ax
-
-mov ah, 0x0e
-; mov al, [0x7c00]
-mov al, [cs:0x01]
-int 0x10
-
-; mov bx, 0x7c00
-; call print_string
-
-;mov dx, 0x7c01
-;call print_hex
+mov bx, 0x7c00
+add bx, HEX_OUT
+call print_string
 
 loop:
     jmp loop
 
-%include "print_string.asm"
-%include "print_hex.asm"
+to_char:
+    cmp cx, 0xa
+    jl digits
+    sub cx, 0xa
+    add cx, 'a'
+    ret
+    
+digits:
+    add cx, '0'
+    ret
+    
+HEX_OUT:
+    db 'The string - which is pretty long and exceeds 8 bits',0
+
+
+%include "./print_string.asm"
 
 times 510 - ($ - $$) db 0
 dw 0xaa55
