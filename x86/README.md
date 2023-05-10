@@ -74,14 +74,20 @@ General purpose:
 
 Segment-registers:
 
-| Code | Purpose                | Usual value  |
-|------|------------------------|--------------|
-| `ss` | stack                  |              |
-| `cd` | code                   | 0x7c00       |
-| `ds` | data                   |              |
-| `es` | extra data             |              |
-| `fs` | more extra data        |              |
-| `gs` | yet more extra data    |              |
+All segment-registers must be set indirectly:
+```asm
+mov cx, 0x7c0
+mov ds, cx
+```
+
+| Code | Purpose                | Usual value  | Notes      |
+|------|------------------------|--------------|------------|
+| `ss` | stack                  |              |            |
+| `cs` | code                   | 0x7c00       | Can't be overwritten, I think      |
+| `ds` | data                   |              | Is implicitly accessed with `[offset]`, but `[ds:offset]` works, too  |
+| `es` | extra data             |              | `[es:offset]`  |
+| `fs` | more extra data        |              | `[fs:offset]`  |
+| `gs` | yet more extra data    |              | `[gs:offset]`  |
 
 
 
