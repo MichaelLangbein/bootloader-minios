@@ -2,3 +2,6 @@
 *.o
 *.elf
 *.img
+os
+os-tutorial
+MiniOS

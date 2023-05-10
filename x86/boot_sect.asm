@@ -23,10 +23,12 @@ BOOT_DRIVE:
 %include "./print_string.asm"
 %include "./disk_load.asm"
 
+greeting:
+    db 'Hello, os!',0
 
 times 510 - ($ - $$) db 0
 dw 0xaa55
 
 
-times 256 dw 0xdada
-times 256 dw 0xface
+times 256 dw 'Aa'
+times 256 dw 'Bb'
