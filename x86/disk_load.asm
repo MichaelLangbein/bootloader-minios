@@ -10,6 +10,13 @@ disk_load:
     mov cl , 0x02   ; Start reading from second sector ( i.e.
                     ; after the boot sector )
     int 0x13        ; BIOS interrupt
+
+    ; bios will save results in es:bx = 16 * 0xa000 + 0x1234 = 0xa1234
+    ; mov bx, 0xa000
+    ; mov es, bx
+    ; mov bx, 0x1234
+
+
     jc disk_error   ; Jump if error ( i.e. carry flag set )
     pop dx          ; Restore DX from the stack
     cmp dh , al     ; if AL ( sectors read ) != DH ( sectors expected )

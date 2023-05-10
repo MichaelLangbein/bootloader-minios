@@ -89,6 +89,12 @@ mov ds, cx
 | `fs` | more extra data        |              | `[fs:offset]`  |
 | `gs` | yet more extra data    |              | `[gs:offset]`  |
 
+Note that `[es:offset]` get's us the value at `es * 16 + offset`.
+If instead we want the address, we'd write 
+```asm
+mov cx,  0x7c00  ; note the extra 0 at end
+add cx, <offset>
+```
 
 
 # Examples
@@ -163,4 +169,25 @@ loop:
 
 times 510 - ($ - $$) db 0
 dw 0xaa55
+```
+
+
+# Open questions
+```asm
+; this works:
+mov bx, 0x7c00
+add bx, str
+call print_string
+str:
+    db "This is a string",0
+ 
+; This doesn't:
+str:
+    db "This is a string",0
+mov bx, 0x7c00
+add bx, str
+call print_string
+
+; Why?
+
 ```
