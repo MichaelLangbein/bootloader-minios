@@ -86,8 +86,8 @@ mov ds, cx
 | `cs` | code                   | 0x7c00       | Can't be overwritten, I think      |
 | `ds` | data                   |              | Is implicitly accessed with `[offset]`, but `[ds:offset]` works, too  |
 | `es` | extra data             |              | `[es:offset]`  |
-| `fs` | more extra data        |              | `[fs:offset]`  |
-| `gs` | yet more extra data    |              | `[gs:offset]`  |
+| `fs` | more extra data        |              | `[fs:offset]`; only in 32bit mode  |
+| `gs` | yet more extra data    |              | `[gs:offset]`; only in 32bit mode  |
 
 Note that `[es:offset]` get's us the value at `es * 16 + offset`.
 If instead we want the address, we'd write 
@@ -95,6 +95,23 @@ If instead we want the address, we'd write
 mov cx,  0x7c00  ; note the extra 0 at end
 add cx, <offset>
 ```
+
+
+
+# Switching to 32 bits
+
+## Printing
+- Display already known to bios.
+- Starts in VGA-compatability mode.
+- Memory-mapped IO.
+- Has graphics mode and text-mode.
+- Text-mode:
+    - 80 * 25 character-cells.
+    - Already has some simple font in internal memory of VGA display device.
+    - Each cell's letter defined by 16 bits: fist 8: ascii-code, last 8: color, blinking, etc.
+    - Usually starts at 0xb8000
+
+
 
 
 # Examples
