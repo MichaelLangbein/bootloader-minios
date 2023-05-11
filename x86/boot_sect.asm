@@ -26,7 +26,7 @@ BEGIN_PM:
     call print_string_pm
 
     loop:
-        call loop
+        jmp loop
 
 
 GREETING_PROTECTED_MODE:
