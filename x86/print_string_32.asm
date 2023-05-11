@@ -13,7 +13,7 @@ print_string_pm:
 
 print_string_pm_loop:
                                 ; filling ax with char-info
-    move al, [ebx]              ; fist 8 bits: ascii-code
+    mov al, [ebx]               ; fist 8 bits: ascii-code
     mov ah, WHITE_ON_BLACK      ; last 8 bits: styling
 
     cmp al, 0

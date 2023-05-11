@@ -1,34 +1,26 @@
 [org 0x7c00]
 
-mov [BOOT_DRIVE], dl
+    mov bp, 0x9000
+    mov sp, bp
 
-mov bp, 0x8000
-mov sp, bp
+    mov bx, GREETING_REAL_MODE
+    call print_string
 
-mov bx, 0x9000
-mov dh, 5
-mov dl, [BOOT_DRIVE]
-call disk_load
+    call switch_to_pm
 
-mov bx, 0x9000
-call print_string
+    mov ebx, GREETING_PROTECTED_MODE
+    call print_string_pm
 
-
-loop:
-    jmp loop
-
-BOOT_DRIVE:
-    db 0
+    jmp $
 
 %include "./print_string.asm"
-%include "./disk_load.asm"
+%include "./gdt.asm"
+%include "./print_string_32.asm"
+%include "switch_to_pm.asm"
 
-greeting:
-    db 'Hello, os!',0
+GREETING_REAL_MODE:
+    db "Hello from real mode!",0
 
-times 510 - ($ - $$) db 0
-dw 0xaa55
-
-
-times 256 dw 'Aa'
-times 256 dw 'Bb'
+[bits 32]
+GREETING_PROTECTED_MODE:
+    db "Hello from protected mode!",0

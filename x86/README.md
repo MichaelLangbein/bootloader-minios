@@ -111,7 +111,55 @@ add cx, <offset>
     - Each cell's letter defined by 16 bits: fist 8: ascii-code, last 8: color, blinking, etc.
     - Usually starts at 0xb8000
 
+## GDT
 
+- List of segment-descriptors
+- Segment-descriptor: 64-bit structure
+    - Base-address: 32-bit
+    - Segment-limit: 20-bits: size of segment
+    - Flags: 12-bits. (Privilege level, read-only, write-only, ...)
+
+layout:
+| bit 0-15       | bit 16-31   | 32-39       | 40-49      | 50-53          | 54-        | 57-63 |
+|----------------|-------------|-------------|------------|----------------|------------|--|
+| segment part 1 | base part 1 | pase part 2 | flags      | segment part 2 | flags      | base part 3 |
+
+
+Simplest configuration: *basic flat model*.
+- Initial null-descriptor: 8 zero-bytes.
+- Two overlapping segments: *code* and *data*.
+- Cover full 4GB.
+- Overlapping: no protection of one segment from the other. No paging for virtual memory, either.
+- Code segment:
+    - base: 0x0
+    - limit: 0xffffff
+    - present: 1 (a virt-mem-setting, 1 means "really in mem, not only virtual")
+    - privilege: 0 (highest ring)
+    - descriptor type: 1 (code or data, 0 is for traps)
+    - Type:
+        - Code: 1
+        - Conforming: 0 (code in lower-privilege-segments must not call code in this segment)
+        - Readable: 1 (0 = exec only)
+        - Accessed: 0
+    - Some more flags:
+        - Granularity: 1 (multiplies limit by 4k => limit becomes from 0xffffff to 0xffffff000 = 4GB)
+        - 32bit default: 1
+        - 64bit code segment: 0
+        - AVL: 0 (sometimes used for debugging)
+- Data segment:
+    - identical (because overlapping), except:
+    - Type:
+        - Code: 0 (data)
+        - Expand down: 0
+        - Writable: 1
+        - Accessed: 0
+
+Additionally: 
+GDT-descriptor (48 bits)
+    - GDT size (16 bits)
+    - GDT address (32 bits)
+
+    
 
 
 # Examples
