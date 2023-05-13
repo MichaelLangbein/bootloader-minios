@@ -9,6 +9,15 @@
 #define REG_SCREEN_DATA 0x3D5
 
 
+
+void print_char(char character, int col, int row, char attribute_byte);
+
+int get_screen_offset(int col, int row);
+
+int get_cursor();
+
+int set_cursor(int offset);
+
 void print_at(char* message, int col, int row);
 
 void print(char* message);
