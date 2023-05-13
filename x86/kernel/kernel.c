@@ -7,11 +7,11 @@ void main() {
     // *video_memory = 'X';
 
     clear_screen();
-    print_at("hi", 1, 1);
+    print_at("hi there, this is a message", 1, 1);
 
-    print_char('A', 0, 0, WHITE_ON_BLACK);
-    print_char('B', 1, 1, WHITE_ON_BLACK);
-    print_char('C', 2, 2, WHITE_ON_BLACK);
-    print_char('D', 3, 3, WHITE_ON_BLACK);
+    print_at('AAAA', 0, 0);
+    print_at('BBBB', 1, 1);
+    print_at('CCCC', 2, 2);
+    print_at('DDDD', 3, 3);
     
 }
