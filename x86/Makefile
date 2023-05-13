@@ -15,3 +15,5 @@ run: os-image
 clean:
 	rm *.bin
 	rm *.o
+	rm *.elf
+	rm *.img
