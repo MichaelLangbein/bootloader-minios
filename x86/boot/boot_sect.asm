@@ -21,11 +21,11 @@ KERNEL_OFFSET equ 0x1000    ; This is the memory offset to which we will load ou
 
 
 
-%include "./print_string.asm"
-%include "./disk_load.asm"
-%include "./gdt.asm"
-%include "switch_to_pm.asm"
-%include "./print_string_32.asm"
+%include "./boot/print_string.asm"
+%include "./boot/disk_load.asm"
+%include "./boot/gdt.asm"
+%include "./boot/switch_to_pm.asm"
+%include "./boot/print_string_32.asm"
 
 
 [bits 16]

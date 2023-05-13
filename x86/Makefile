@@ -1,22 +1,27 @@
-boot_sect.bin: boot_sect.asm
-	nasm boot_sect.asm -f bin -o boot_sect.bin
-	
-kernel_entry.o: kernel_entry.asm
-	nasm kernel_entry.asm -f elf -o kernel_entry.o
+# Special variables:
+# $^ is substituted with all of the target's dependency-files
+# $< is the first dependency 
+# $@ is the target-file
 
-kernel.o: kernel.c
-	i386-elf-gcc -ffreestanding -c kernel.c -o kernel.o
+boot_sect.bin: ./boot/boot_sect.asm
+	nasm $< -f bin -o $@
+	
+kernel_entry.o: ./kernel/kernel_entry.asm
+	nasm $< -f elf -o $@
+
+kernel.o: ./kernel/kernel.c
+	i386-elf-gcc -ffreestanding -c $< -o $@
 
 kernel.bin: kernel_entry.o kernel.o
 	# -Ttext 0x1000: kernel will be placed at 0x1000, so linker can make relative adresses absolute.
 	# linker respects order of files given, so kernel_entry will definitely come first
-	i386-elf-ld -o kernel.bin -Ttext 0x1000 kernel_entry.o kernel.o --oformat binary
+	i386-elf-ld -o $@ -Ttext 0x1000 $^ --oformat binary
 
 os-image: boot_sect.bin kernel.bin
-	cat boot_sect.bin kernel.bin > os-image
+	cat boot_sect.bin kernel.bin > $@
 
 run: os-image
-	qemu-system-x86_64 -fda ./os-image
+	qemu-system-x86_64 -fda ./$<
 
 clean:
 	rm -f *.bin
