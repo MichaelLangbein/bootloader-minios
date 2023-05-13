@@ -1,3 +1,3 @@
 int my_function() {
-    return 0xbaba;
+    char* my_string = "Hello, c!";
 }
