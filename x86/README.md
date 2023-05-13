@@ -236,6 +236,43 @@ times 510 - ($ - $$) db 0
 dw 0xaa55
 ```
 
+## Loading from disk
+```asm
+; load DH sectors to ES:BX from drive DL
+disk_load:
+    push dx         ; Store DX on stack so later we can recall
+                    ; how many sectors were request to be read ,
+                    ; even if it is altered in the meantime
+    mov ah , 0x02   ; BIOS read sector function
+    mov al , dh     ; Read DH sectors
+    mov ch , 0x00   ; Select cylinder 0
+    mov dh , 0x00   ; Select head 0
+    mov cl , 0x02   ; Start reading from second sector ( i.e.
+                    ; after the boot sector )
+    int 0x13        ; BIOS interrupt
+
+    ; bios will save results in es:bx = 16 * 0xa000 + 0x1234 = 0xa1234
+    ; mov bx, 0xa000
+    ; mov es, bx
+    ; mov bx, 0x1234
+
+
+    jc disk_error   ; Jump if error ( i.e. carry flag set )
+    pop dx          ; Restore DX from the stack
+    cmp dh , al     ; if AL ( sectors read ) != DH ( sectors expected )
+    jne disk_error  ; display error message
+    ret
+    
+disk_error :
+    mov bx , DISK_ERROR_MSG
+    call print_string
+    jmp $
+    
+; Variables
+DISK_ERROR_MSG db " Disk read error !", 0
+```
+
+
 
 # Open questions
 ```asm
@@ -255,4 +292,22 @@ call print_string
 
 ; Why?
 
+```
+
+
+# I/O
+Talking to other devices
+- CPU is connected to controllers
+- The controllers talk to devices
+- CPU talks to controllers by reading and setting values to their registers
+- These registers are mapped to a separate section of memory
+- Often, CPU doesn't actually talk to a device-specific controller, but to a bus-controller, which then talks to a device-controller at a rate that fits the device (this way the CPU needs not slow down to the device-speed)
+
+Example of writing to a device-controller, using the instructions `in` and `out`
+```asm
+; we know that floppy-controller is mapped to I/O memory location 0x3f2
+mov dx, 0x3f2       ; save into dx the contents of the device-controller
+in al, dx           ; read contents into al
+or al, 00010000b    ; set 4th bit of contents to true to start floppy-motor.
+out dx, al          ; send updated contents back to controller
 ```
